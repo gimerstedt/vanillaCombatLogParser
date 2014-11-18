@@ -11,6 +11,7 @@ if ($handle = opendir('.')) {
 	    	array_push($files, array("name"=>$entry, "size"=>filesize($entry)));
     }
     closedir($handle);
+    sort($files);
 }
 
 // some variables
@@ -50,7 +51,7 @@ if(isset($_GET['f'])){
     chart.draw(data, options);
   }
 </script>
-<h1><button type="button" class="btn btn-default"><a href="index.php">Back</a></button> $d->name</h1>
+<h1><a href="index.php"><span class="glyphicon glyphicon-circle-arrow-up" aria-hidden="true"></span></a> $d->name</h1>
 <table class="table table-striped"><tr><th>name</th><th>amount</th><th>avg</th><th>misc</th><th>% of total</th></tr>
 EOD;
 	$html .= tableRow("hits", $d->nrHits, $d->avghit, "", $d->hitPercentage);
@@ -68,22 +69,15 @@ EOD;
 	$html .= '<h1>combat logs</h1>';
 	$html .= '<table class="table"><tr><th>name</th><th>size</th><th>view</th></tr>';
 	foreach ($files as $key => $value) {
-		$html .= "<tr><td><a href=\"?f={$key}\">{$value['name']}</a></td><td>".humanFileSize($value['size'])."</td><td><a href=\"{$value['name']}\">view</a></td></tr>";
+		$html .= "<tr><td><a href=\"?f={$key}\">{$value['name']}</a></td><td>".humanFileSize($value['size'])."</td><td><a href=\"{$value['name']}\"><span class=\"glyphicon glyphicon-circle-arrow-down\" aria-hidden=\"true\"></span></a></td></tr>";
 	}
+	$html .= '</table>';
 }
 
 echo $html;
 
-function wl($nr, $name){
-	return '<li><a href="?f='.$nr.'">'.$name.'</a></li>';
-}
-
 function tableRow($name, $amount, $avg, $misc, $percentage){
 	return "<tr><td>{$name}</td><td>{$amount}</td><td>{$avg}</td><td>{$misc}</td><td>{$percentage}</tr>";
-}
-
-function getPercentage($type, $totala){
-	return round($type/$totala*100, 2);
 }
 
 function humanFileSize($size,$unit="") {
